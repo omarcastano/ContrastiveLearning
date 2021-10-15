@@ -64,3 +64,5 @@ def visualize_augmentations(dataset, n_images, strength=0.1, croped_size=26):
         ax[1,i].set_title('Augmented')
         ax[1,i].axis('off')
         ax[0,i].axis('off')
+
+        
