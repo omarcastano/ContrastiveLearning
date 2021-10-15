@@ -1,3 +1,6 @@
+import tensorflow as tf
+import matplotlib.pyplot as plt
+
 #normalize image
 def normalize_img(img, label):
     #tf.cast cahnge de dtype of our tensor
