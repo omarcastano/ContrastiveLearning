@@ -68,10 +68,7 @@ def visualize_augmentations(dataset, n_images, strength=0.1, croped_size=26):
         ax[1,i].axis('off')
         ax[0,i].axis('off')
 
-        
 
-        
-        
 #get positive pairs        
 def get_augmented_datasets(ds_unlabeled, batch_size, strength, croped_size):
     x1_train =  (ds_unlabeled.shuffle(600000, seed=26)
