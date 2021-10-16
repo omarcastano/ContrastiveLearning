@@ -71,6 +71,23 @@ def KNN_test(ds_train, ds_test, encoder):
     for i, l in ds_test:
         labels_test.append(labeles_names[l.numpy()])
 
+    labeles_names = np.array(['airplane', 'automobile', 'bird', 'cat', 'deer', 'dog', 'frog', 'horse', 'ship', 'truck'])
+    X=[]
+    y=[]
+    for i,l in ds_train.shuffle(1000000):
+        X.append(i)
+        y.append(labeles_names[l])
+    data_train_labeled = np.array(X)
+    labels_train = np.array(y)    
+    
+    labeles_names = np.array(['airplane', 'automobile', 'bird', 'cat', 'deer', 'dog', 'frog', 'horse', 'ship', 'truck'])
+    X=[]
+    y=[]
+    for i,l in ds_test.shuffle(1000000):
+        X.append(i)
+        y.append(labeles_names[l])
+    data_test_labeled = np.array(X)
+    labels_test = np.array(y)  
 
     embeddings_test = encoder.predict(data_test_labeled)
     embeddings_train = encoder.predict(data_train_labeled)
