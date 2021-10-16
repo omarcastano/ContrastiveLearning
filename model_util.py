@@ -6,6 +6,7 @@ from sklearn.neighbors import KNeighborsClassifier
 from ContrastiveLearning.data_util import normalize_img
 import numpy as np
 import matplotlib.pyplot as plt
+import seaborn as sns
 
 import tensorflow as tf
 
@@ -36,7 +37,7 @@ def tsne_plot(dataset, encoder):
         labels.append(labeles_names[l.numpy()])
 
     tsne = TSNE(n_components = 2, perplexity=30, n_jobs = -1)
-    embeddings = MinMaxScaler().fit_transform(embeddings)
+    #embeddings = MinMaxScaler().fit_transform(embeddings)
     img_tsne = tsne.fit_transform(embeddings)
     plt.figure(figsize=(11,7))
     sns.scatterplot(x=img_tsne[:,0], y=img_tsne[:,1], hue = labels, s=100) 
