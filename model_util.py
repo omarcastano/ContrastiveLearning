@@ -4,6 +4,7 @@ from sklearn.manifold import TSNE
 from sklearn.metrics.cluster import adjusted_mutual_info_score, adjusted_rand_score
 from sklearn.neighbors import KNeighborsClassifier
 from ContrastiveLearning.data_util import normalize_img
+import numpy as np
 
 import tensorflow as tf
 
