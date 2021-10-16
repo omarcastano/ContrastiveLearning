@@ -6,11 +6,11 @@ from ContrastiveLearning.model_util import get_projection_header
 
 #contrastive model
 class SimCLR(tf.keras.Model):
-    def __init__(self, projected_dim, temperature):
+    def __init__(self, projected_dim, temperature, encoder):
         super(SimCLR, self).__init__()
         self.temperature = temperature
         
-        self.encoder = get_encoder(0.0)
+        self.encoder = encoder
         self.projection_header = get_projection_header(projected_dim=projected_dim)
         print('Embedding dimension=' ,self.encoder.output.shape[1:], '\n')
 
