@@ -2,6 +2,7 @@
 
 import tensorflow as tf
 from ContrastiveLearning.ContrastiveLoss import contrastive_loss
+from ContrastiveLearning.model_util import get_projection_header
 
 #contrastive model
 class SimCLR(tf.keras.Model):
