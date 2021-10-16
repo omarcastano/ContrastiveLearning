@@ -7,6 +7,7 @@ from ContrastiveLearning.data_util import normalize_img
 import numpy as np
 import matplotlib.pyplot as plt
 import seaborn as sns
+from sklearn.neighbors import KNeighborsClassifier
 
 import tensorflow as tf
 
@@ -43,3 +44,46 @@ def tsne_plot(dataset, encoder):
     sns.scatterplot(x=img_tsne[:,0], y=img_tsne[:,1], hue = labels, s=100) 
     plt.title('t-sne plot', fontsize=8)
     plt.show()
+    
+    
+def KNN_test(ds_train, ds_test, encoder):
+    #KNN
+    data_train_labeled = (ds_train
+                .map(normalize_img, num_parallel_calls = tf.data.experimental.AUTOTUNE)
+                .batch(batch_size)
+                .prefetch(tf.data.experimental.AUTOTUNE)
+    )
+
+    data_test_labeled = (ds_test
+                .map(normalize_img, num_parallel_calls = tf.data.experimental.AUTOTUNE)
+                .batch(batch_size)
+                .prefetch(tf.data.experimental.AUTOTUNE)
+    )
+
+    labeles_names = np.array(['airplane', 'automobile', 'bird', 'cat', 'deer', 'dog', 'frog', 'horse', 'ship', 'truck'])
+    labels_train =[]
+    for i, l in ds_train:
+        labels_train.append(labeles_names[l.numpy()])
+
+    labeles_names = np.array(['airplane', 'automobile', 'bird', 'cat', 'deer', 'dog', 'frog', 'horse', 'ship', 'truck'])
+    labels_test =[]
+    for i, l in ds_test:
+        labels_test.append(labeles_names[l.numpy()])
+
+
+    embeddings_test = encoder.predict(data_test_labeled)
+    embeddings_train = encoder.predict(data_train_labeled)
+
+
+    scale = MinMaxScaler()
+    embeddings_train = scale.fit_transform(embeddings_train)
+    embeddings_test = scale.transform(embeddings_test)
+
+    knn = KNeighborsClassifier(n_jobs = -1)
+    knn.fit(embeddings_train, np.array(labels_train))
+
+    print('\n-----------------------------------------------------')
+    print('KNeighborsClassifier Results')
+    print('Accuracy' , knn.score(embeddings_test, np.array(labels_test) ) )
+    print('-----------------------------------------------------')
+    return knn.score(embeddings_test, np.array(labels_test) )
