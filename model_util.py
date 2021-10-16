@@ -10,6 +10,7 @@ import seaborn as sns
 from sklearn.neighbors import KNeighborsClassifier
 
 import tensorflow as tf
+batch_size =  32
 
 #Projection Header
 def get_projection_header(projected_dim):
@@ -27,7 +28,7 @@ def get_projection_header(projected_dim):
 def tsne_plot(dataset, encoder):
     data_labeled = (dataset
                 .map(normalize_img, num_parallel_calls = tf.data.experimental.AUTOTUNE)
-                .batch(1)
+                .batch(batch_size)
                 .prefetch(tf.data.experimental.AUTOTUNE))
 
     embeddings = encoder.predict(data_labeled)
