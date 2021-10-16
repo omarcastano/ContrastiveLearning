@@ -71,4 +71,29 @@ def visualize_augmentations(dataset, n_images, strength=0.1, croped_size=26):
 
 #get positive pairs        
 def get_augmented_datasets(ds_unlabeled, batch_size, strength, croped_size):
-    return ds_unlabeled
+    x1_train =  (ds_unlabeled.shuffle(600000, seed=26)
+                .map(normalize_img, num_parallel_calls = tf.data.experimental.AUTOTUNE)
+                .map(lambda x,y: augmentation(x,y,strength=strength,croped_size=croped_size) ,num_parallel_calls = tf.data.experimental.AUTOTUNE)
+                .cache()
+                .batch(batch_size)
+                .prefetch(tf.data.experimental.AUTOTUNE)
+            )
+
+
+    x2_train =  (ds_unlabeled.shuffle(600000, seed=26)
+                .map(normalize_img, num_parallel_calls = tf.data.experimental.AUTOTUNE)
+                .map(lambda x,y: augmentation(x,y,strength=strength,croped_size=croped_size) ,num_parallel_calls = tf.data.experimental.AUTOTUNE)
+                .cache()
+                .batch(batch_size)
+                .prefetch(tf.data.experimental.AUTOTUNE)
+            )
+    
+    x = (ds_unlabeled.shuffle(600000, seed=26)
+            .map(normalize_img, num_parallel_calls = tf.data.experimental.AUTOTUNE)
+            .batch(batch_size)
+            .prefetch(tf.data.experimental.AUTOTUNE)
+        )
+
+    data_unlabeled = tf.data.Dataset.zip((x1_train, x2_train))
+
+    return x, data_unlabeled
