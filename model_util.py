@@ -23,7 +23,7 @@ def get_projection_header(projected_dim):
 def tsne_plot(dataset, encoder):
     data_labeled = (dataset
                 .map(normalize_img, num_parallel_calls = tf.data.experimental.AUTOTUNE)
-                .batch(batch_size)
+                .batch(1)
                 .prefetch(tf.data.experimental.AUTOTUNE))
 
     embeddings = encoder.predict(data_labeled)
