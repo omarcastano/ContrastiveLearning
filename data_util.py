@@ -122,5 +122,3 @@ def plot_augmented_data(data_unlabeled, x):
 
     plt.show()
 
-
-plot_augmented_data(data_unlabeled, x)
