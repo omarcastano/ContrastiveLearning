@@ -63,11 +63,11 @@ def KNN_test(ds_train, ds_test, encoder):
 
     labels_train =[]
     for i, l in ds_train:
-        labels_train.append(labeles_names[l.numpy()])
+        labels_train.append(l.numpy())
 
     labels_test =[]
     for i, l in ds_test:
-        labels_test.append(labeles_names[l.numpy()])
+        labels_test.append(l.numpy())
 
     embeddings_test = encoder.predict(data_test_labeled)
     embeddings_train = encoder.predict(data_train_labeled)
