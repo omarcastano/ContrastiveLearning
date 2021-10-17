@@ -97,3 +97,30 @@ def get_augmented_datasets(ds_unlabeled, batch_size, strength, croped_size):
     data_unlabeled = tf.data.Dataset.zip((x1_train, x2_train))
 
     return x, data_unlabeled
+
+
+def plot_augmented_data(data_unlabeled, x):
+    (x1_view, _), (x2_view, _) = next(iter(data_unlabeled))
+    x_view, _ = next(iter(x))
+
+    fig, ax = plt.subplots(3, 10, figsize=(28,7))
+
+    for i, j in enumerate(x_view[:10]):
+        ax[0, i].imshow(j)
+        ax[0, i].axis('off')
+        ax[0, i].set_title('Original')
+
+    for i, j in enumerate(x1_view[:10]):
+        ax[1, i].imshow(j)
+        ax[1, i].axis('off')
+        ax[1, i].set_title('Augmentated 1')
+        
+    for i, j in enumerate(x2_view[:10]):
+        ax[2, i].imshow(j)
+        ax[2, i].axis('off')
+        ax[2, i].set_title('Augmentated 2')
+
+    plt.show()
+
+
+plot_augmented_data(data_unlabeled, x)
