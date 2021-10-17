@@ -25,7 +25,7 @@ def get_projection_header(projected_dim):
 
 
 #T-splot plot
-def tsne_plot(dataset, encoder):
+def tsne_plot(dataset, encoder, labeles_names):
     data_labeled = (dataset
                 .map(normalize_img, num_parallel_calls = tf.data.experimental.AUTOTUNE)
                 .batch(batch_size)
@@ -33,7 +33,7 @@ def tsne_plot(dataset, encoder):
 
     embeddings = encoder.predict(data_labeled)
 
-    labeles_names = np.array(['airplane', 'automobile', 'bird', 'cat', 'deer', 'dog', 'frog', 'horse', 'ship', 'truck'])
+
     labels =[]
     for i, l in dataset:
         labels.append(labeles_names[l.numpy()])
@@ -45,8 +45,8 @@ def tsne_plot(dataset, encoder):
     sns.scatterplot(x=img_tsne[:,0], y=img_tsne[:,1], hue = labels, s=100) 
     plt.title('t-sne plot', fontsize=8)
     plt.show()
-    
-    
+
+ #k nearest neighbor
 def KNN_test(ds_train, ds_test, encoder):
     #KNN
     data_train_labeled = (ds_train
@@ -61,12 +61,10 @@ def KNN_test(ds_train, ds_test, encoder):
                 .prefetch(tf.data.experimental.AUTOTUNE)
     )
 
-    labeles_names = np.array(['airplane', 'automobile', 'bird', 'cat', 'deer', 'dog', 'frog', 'horse', 'ship', 'truck'])
     labels_train =[]
     for i, l in ds_train:
         labels_train.append(labeles_names[l.numpy()])
 
-    labeles_names = np.array(['airplane', 'automobile', 'bird', 'cat', 'deer', 'dog', 'frog', 'horse', 'ship', 'truck'])
     labels_test =[]
     for i, l in ds_test:
         labels_test.append(labeles_names[l.numpy()])
@@ -87,3 +85,71 @@ def KNN_test(ds_train, ds_test, encoder):
     print('Accuracy' , knn.score(embeddings_test, np.array(labels_test) ) )
     print('-----------------------------------------------------')
     return knn.score(embeddings_test, np.array(labels_test) )
+
+#Neural Network at the top of the encoder
+def ANN_test(ds_train, ds_test, input_shape, encoder, fine_tune_encoder, batch_size, epochs, labeles_names):
+    data_train_labeled = (ds_train
+                .map(normalize_img, num_parallel_calls = tf.data.experimental.AUTOTUNE)
+                .cache()
+                .shuffle(10000)
+                .batch(batch_size)
+                .prefetch(tf.data.experimental.AUTOTUNE)
+    )
+
+    data_test_labeled = (ds_test
+                .map(normalize_img, num_parallel_calls = tf.data.experimental.AUTOTUNE)
+                .cache()
+                .shuffle(10000)
+                .batch(batch_size)
+                .prefetch(tf.data.experimental.AUTOTUNE)
+    )
+
+    encoder = encoder
+    for layer in encoder.layers:
+        layer.trainable = fine_tune_encoder
+
+    print('\n-----------------------------------------------------')
+    print(f'ANN Results (fine tune encoder = {fine_tune_encoder} )')
+
+    tf.keras.backend.clear_session()
+    model = tf.keras.models.Sequential([
+            tf.keras.layers.Input(shape=[input_shape, input_shape, 3]),
+            tf.keras.layers.RandomFlip(mode='horizontal'),
+            tf.keras.layers.RandomContrast(factor=(0.1,0.5)),
+            encoder,
+            tf.keras.layers.Dropout(0.4),
+            tf.keras.layers.Dense(128, activation='elu', kernel_initializer='he_normal'),
+            tf.keras.layers.BatchNormalization(),
+            tf.keras.layers.Dropout(0.3),
+            tf.keras.layers.Dense(10, activation='softmax')
+    ])
+
+    model.compile(optimizer='nadam', loss="sparse_categorical_crossentropy", metrics = "acc")
+    callback = tf.keras.callbacks.EarlyStopping(patience=30)
+    model.fit(data_train_labeled, batch_size=batch_size, epochs=epochs, validation_data=data_test_labeled, callbacks=[callback], verbose=0)
+    print(model.evaluate(data_test_labeled) )
+    print('-------------------------------------------------------')
+    result = model.evaluate(data_test_labeled, verbose=0)
+    return result, model
+
+#Implements Kmeans given the pre-trained encoder network
+def KMEANS_test(dataset, encoder):
+    #KMEANS
+    data_labeled = (dataset
+                .map(normalize_img, num_parallel_calls = tf.data.experimental.AUTOTUNE)
+                .batch(batch_size)
+                .prefetch(tf.data.experimental.AUTOTUNE))
+
+    embeddings = encoder.predict(data_labeled)
+
+    labels =[]
+    for i, l in dataset:
+        labels.append(labeles_names[l.numpy()])
+
+    kmeans = KMeans(n_clusters = 10, n_jobs = -1)
+    y_pred = kmeans.fit_predict(embeddings)
+    print('\n-----------------------------------------------------')
+    print('Kmenas Clustering Results')
+    print('adjusted_rand_score =' ,adjusted_rand_score(np.array(labels), y_pred))
+    print('-----------------------------------------------------\n')
+    return adjusted_rand_score(np.array(labels), y_pred)
