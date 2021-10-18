@@ -144,7 +144,7 @@ def KMEANS_test(dataset, encoder):
 
     labels =[]
     for i, l in dataset:
-        labels.append(labeles_names[l.numpy()])
+        labels.append(l.numpy())
 
     kmeans = KMeans(n_clusters = 10, n_jobs = -1)
     y_pred = kmeans.fit_predict(embeddings)
