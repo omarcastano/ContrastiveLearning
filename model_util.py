@@ -87,7 +87,7 @@ def KNN_test(ds_train, ds_test, encoder):
     return knn.score(embeddings_test, np.array(labels_test) )
 
 #Neural Network at the top of the encoder
-def ANN_test(ds_train, ds_test, input_shape, encoder, fine_tune_encoder, batch_size, epochs, labeles_names):
+def ANN_test(ds_train, ds_test, input_shape, encoder, fine_tune_encoder, batch_size, epochs):
     data_train_labeled = (ds_train
                 .map(normalize_img, num_parallel_calls = tf.data.experimental.AUTOTUNE)
                 .cache()
