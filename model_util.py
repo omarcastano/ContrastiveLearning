@@ -91,7 +91,7 @@ def ANN_test(ds_train, ds_test, input_shape, encoder, fine_tune_encoder, batch_s
     data_train_labeled = (ds_train
                 .map(normalize_img, num_parallel_calls = tf.data.experimental.AUTOTUNE)
                 .cache()
-                .shuffle(10000)
+                .shuffle(100000)
                 .batch(batch_size)
                 .prefetch(tf.data.experimental.AUTOTUNE)
     )
@@ -99,7 +99,7 @@ def ANN_test(ds_train, ds_test, input_shape, encoder, fine_tune_encoder, batch_s
     data_test_labeled = (ds_test
                 .map(normalize_img, num_parallel_calls = tf.data.experimental.AUTOTUNE)
                 .cache()
-                .shuffle(10000)
+                .shuffle(100000)
                 .batch(batch_size)
                 .prefetch(tf.data.experimental.AUTOTUNE)
     )
