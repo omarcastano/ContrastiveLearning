@@ -111,7 +111,7 @@ def ANN_test(ds_train, ds_test, input_shape, encoder, fine_tune_encoder, batch_s
     print('\n-----------------------------------------------------')
     print(f'ANN Results (fine tune encoder = {fine_tune_encoder} )')
 
-    tf.keras.backend.clear_session()
+    #tf.keras.backend.clear_session()
     model = tf.keras.models.Sequential([
             tf.keras.layers.Input(shape=[input_shape, input_shape, 3]),
             tf.keras.layers.RandomFlip(mode='horizontal'),
@@ -125,12 +125,14 @@ def ANN_test(ds_train, ds_test, input_shape, encoder, fine_tune_encoder, batch_s
     ])
 
     model.compile(optimizer='nadam', loss="sparse_categorical_crossentropy", metrics = "acc")
-    callback = tf.keras.callbacks.EarlyStopping(patience=30)
+    callback = tf.keras.callbacks.EarlyStopping(patience=10)
     model.fit(data_train_labeled, batch_size=batch_size, epochs=epochs, validation_data=data_test_labeled, callbacks=[callback], verbose=0)
     print(model.evaluate(data_test_labeled) )
     print('-------------------------------------------------------')
     result = model.evaluate(data_test_labeled, verbose=0)
-    return result, model
+    return result
+
+
 
 #Implements Kmeans given the pre-trained encoder network
 def KMEANS_test(dataset, encoder):
