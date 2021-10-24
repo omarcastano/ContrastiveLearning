@@ -1,7 +1,7 @@
 import tensorflow as tf
 from ResNet import ResNet18
 
-def get_vgg_encoder(dropout=None, input_shape):
+def get_vgg_encoder(input_shape, dropout=None):
     encoder = tf.keras.models.Sequential([
         tf.keras.layers.Input(shape=input_shape) ,
         
