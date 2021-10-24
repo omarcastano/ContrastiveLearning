@@ -39,6 +39,7 @@ def get_vgg_encoder(input_shape, dropout=None):
   
 def get_resnet18_encoder(input_shape):
     encoder = tf.keras.models.Sequential([
+        tf.keras.layers.Input(shape=input_shape) ,
         ResNet18(input_shape)
     ], name='Encoder')
     return encoder
