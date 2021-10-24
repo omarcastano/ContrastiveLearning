@@ -1,5 +1,5 @@
 import tensorflow as tf
-from ResNet import ResNet18
+from ContrastiveLearning.ResNet import ResNet18
 
 def get_vgg_encoder(input_shape, dropout=None):
     encoder = tf.keras.models.Sequential([
