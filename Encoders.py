@@ -5,17 +5,6 @@ def get_vgg_encoder(input_shape, dropout=None):
     encoder = tf.keras.models.Sequential([
         tf.keras.layers.Input(shape=input_shape) ,
         
-        tf.keras.layers.Conv2D(32, kernel_size=3, padding='same', activation='relu', kernel_initializer='he_normal'),
-        tf.keras.layers.BatchNormalization(),
-        tf.keras.layers.Conv2D(32, kernel_size=3, padding='same', activation='relu', kernel_initializer='he_normal'),
-        tf.keras.layers.BatchNormalization(),
-        tf.keras.layers.Conv2D(32, kernel_size=3, padding='same', activation='relu', kernel_initializer='he_normal'),
-        tf.keras.layers.BatchNormalization(),
-        tf.keras.layers.MaxPool2D(),
-        tf.keras.layers.Dropout(dropout),
-
-        tf.keras.layers.Conv2D(64, kernel_size=3, padding='same', activation='relu', kernel_initializer='he_normal'), 
-        tf.keras.layers.BatchNormalization(),
         tf.keras.layers.Conv2D(64, kernel_size=3, padding='same', activation='relu', kernel_initializer='he_normal'),
         tf.keras.layers.BatchNormalization(),
         tf.keras.layers.Conv2D(64, kernel_size=3, padding='same', activation='relu', kernel_initializer='he_normal'),
@@ -23,11 +12,23 @@ def get_vgg_encoder(input_shape, dropout=None):
         tf.keras.layers.MaxPool2D(),
         tf.keras.layers.Dropout(dropout),
 
-        tf.keras.layers.Conv2D(128, kernel_size=3, padding='same', activation='relu', kernel_initializer='he_normal'),
+        tf.keras.layers.Conv2D(128, kernel_size=3, padding='same', activation='relu', kernel_initializer='he_normal'), 
         tf.keras.layers.BatchNormalization(),
         tf.keras.layers.Conv2D(128, kernel_size=3, padding='same', activation='relu', kernel_initializer='he_normal'),
         tf.keras.layers.BatchNormalization(),
-        tf.keras.layers.Conv2D(128, kernel_size=3, padding='same', activation='relu', kernel_initializer='he_normal'),
+        tf.keras.layers.MaxPool2D(),
+        tf.keras.layers.Dropout(dropout),
+
+        tf.keras.layers.Conv2D(256, kernel_size=3, padding='same', activation='relu', kernel_initializer='he_normal'),
+        tf.keras.layers.BatchNormalization(),
+        tf.keras.layers.Conv2D(256, kernel_size=3, padding='same', activation='relu', kernel_initializer='he_normal'),
+        tf.keras.layers.BatchNormalization(),
+        tf.keras.layers.MaxPool2D(), 
+        tf.keras.layers.Dropout(dropout),
+
+        tf.keras.layers.Conv2D(512, kernel_size=3, padding='same', activation='relu', kernel_initializer='he_normal'),
+        tf.keras.layers.BatchNormalization(),
+        tf.keras.layers.Conv2D(512, kernel_size=3, padding='same', activation='relu', kernel_initializer='he_normal'),
         tf.keras.layers.BatchNormalization(),
         tf.keras.layers.MaxPool2D(), 
         tf.keras.layers.Dropout(dropout),
