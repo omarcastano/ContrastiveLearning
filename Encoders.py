@@ -33,6 +33,7 @@ def get_vgg_encoder(input_shape, dropout=None):
         tf.keras.layers.MaxPool2D(), 
         tf.keras.layers.Dropout(dropout),
 
+
         tf.keras.layers.GlobalAveragePooling2D()
     ], name='Encoder')
     return encoder
