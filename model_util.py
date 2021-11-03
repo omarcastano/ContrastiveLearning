@@ -25,7 +25,7 @@ def get_projection_header(projected_dim):
 
 
 #T-splot plot
-def tsne_plot(dataset, encoder, labeles_names):
+def tsne_plot(dataset, encoder, labeles_names, path):
     data_labeled = (dataset
                 .map(normalize_img, num_parallel_calls = tf.data.experimental.AUTOTUNE)
                 .batch(batch_size)
@@ -44,6 +44,7 @@ def tsne_plot(dataset, encoder, labeles_names):
     plt.figure(figsize=(11,7))
     sns.scatterplot(x=img_tsne[:,0], y=img_tsne[:,1], hue = labels, s=100) 
     plt.title('t-sne plot', fontsize=8)
+    plt.savefig(path +'T-SNE.png')
     plt.show()
 
  #k nearest neighbor
