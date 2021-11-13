@@ -130,7 +130,7 @@ def ANN_test(ds_train, ds_test, input_shape, encoder, fine_tune_encoder, batch_s
     model.fit(data_train_labeled, batch_size=batch_size, epochs=epochs, validation_data=data_test_labeled, callbacks=[callback], verbose=0)
     print(model.evaluate(data_test_labeled) )
     print('-------------------------------------------------------')
-    result = model.evaluate(data_test_labeled, verbose=0)
+    result = model.evaluate(data_test_labeled, verbose=1)
     return result
 
 
