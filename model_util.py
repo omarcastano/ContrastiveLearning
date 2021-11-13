@@ -119,14 +119,18 @@ def ANN_test(ds_train, ds_test, input_shape, encoder, fine_tune_encoder, batch_s
             tf.keras.layers.RandomContrast(factor=(0.1,0.5)),
             tf.keras.layers.RandomRotation(0.2),
             encoder,
+            tf.keras.layers.Dropout(0.4),
             tf.keras.layers.Dense(128, activation='elu', kernel_initializer='he_normal'),
             tf.keras.layers.BatchNormalization(),
-            tf.keras.layers.Dropout(0.4),
+            tf.keras.layers.Dropout(0.3),
+            tf.keras.layers.Dense(128, activation='elu', kernel_initializer='he_normal'),
+            tf.keras.layers.BatchNormalization(),
+            tf.keras.layers.Dropout(0.3),
             tf.keras.layers.Dense(10, activation='softmax')
     ])
 
     model.compile(optimizer='nadam', loss="sparse_categorical_crossentropy", metrics = "acc")
-    callback = tf.keras.callbacks.EarlyStopping(patience=5, restore_best_weights=True)
+    callback = tf.keras.callbacks.EarlyStopping(patience=10, restore_best_weights=True)
     model.fit(data_train_labeled, batch_size=batch_size, epochs=epochs, validation_data=data_test_labeled, callbacks=[callback], verbose=1)
     print(model.evaluate(data_test_labeled) )
     print('-------------------------------------------------------')
