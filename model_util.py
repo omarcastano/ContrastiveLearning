@@ -100,7 +100,6 @@ def ANN_test(ds_train, ds_test, input_shape, encoder, fine_tune_encoder, batch_s
 
     data_test_labeled = (ds_test
                 .map(normalize_img, num_parallel_calls = tf.data.experimental.AUTOTUNE)
-                
                 .shuffle(100000)
                 .batch(batch_size)
                 .prefetch(tf.data.experimental.AUTOTUNE)
@@ -118,7 +117,6 @@ def ANN_test(ds_train, ds_test, input_shape, encoder, fine_tune_encoder, batch_s
             tf.keras.layers.Input(shape=[input_shape, input_shape, 3]),
             tf.keras.layers.RandomFlip(mode='horizontal'),
             tf.keras.layers.RandomContrast(factor=(0.1,0.5)),
-            tf.keras.layers.RandomRotation(0.2),
             encoder,
             tf.keras.layers.Dropout(0.3),
             tf.keras.layers.Dense(10, activation='softmax')
@@ -126,7 +124,7 @@ def ANN_test(ds_train, ds_test, input_shape, encoder, fine_tune_encoder, batch_s
 
     model.compile(optimizer='nadam', loss="sparse_categorical_crossentropy", metrics = "acc")
     callback = tf.keras.callbacks.EarlyStopping(patience=10, restore_best_weights=True)
-    model.fit(data_train_labeled, batch_size=batch_size, epochs=epochs, validation_data=data_test_labeled, callbacks=[callback], verbose=1)
+    model.fit(data_train_labeled, batch_size=batch_size, epochs=epochs, validation_data=data_test_labeled, callbacks=[callback], verbose=0)
     print(model.evaluate(data_test_labeled) )
 
     hist = pd.DataFrame(model.history.history)
