@@ -9,6 +9,8 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 from sklearn.neighbors import KNeighborsClassifier
 import plotly.express as px
+import pandas as pd
+import pandas as pd
 
 import tensorflow as tf
 batch_size =  32
