@@ -8,6 +8,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import seaborn as sns
 from sklearn.neighbors import KNeighborsClassifier
+import plotly.express as px
 
 import tensorflow as tf
 batch_size =  32
@@ -119,12 +120,6 @@ def ANN_test(ds_train, ds_test, input_shape, encoder, fine_tune_encoder, batch_s
             tf.keras.layers.RandomContrast(factor=(0.1,0.5)),
             tf.keras.layers.RandomRotation(0.2),
             encoder,
-            tf.keras.layers.Dropout(0.4),
-            tf.keras.layers.Dense(128, activation='elu', kernel_initializer='he_normal'),
-            tf.keras.layers.BatchNormalization(),
-            tf.keras.layers.Dropout(0.3),
-            tf.keras.layers.Dense(128, activation='elu', kernel_initializer='he_normal'),
-            tf.keras.layers.BatchNormalization(),
             tf.keras.layers.Dropout(0.3),
             tf.keras.layers.Dense(10, activation='softmax')
     ])
@@ -133,6 +128,12 @@ def ANN_test(ds_train, ds_test, input_shape, encoder, fine_tune_encoder, batch_s
     callback = tf.keras.callbacks.EarlyStopping(patience=10, restore_best_weights=True)
     model.fit(data_train_labeled, batch_size=batch_size, epochs=epochs, validation_data=data_test_labeled, callbacks=[callback], verbose=1)
     print(model.evaluate(data_test_labeled) )
+
+    hist = pd.DataFrame(model.history.history)
+    hist.to_excel(savefile+'history.xlsx' ,index=False)
+    fig = px.line(hist, y = hist.columns, x = hist.index + 1, height=400, width=700)
+    fig = fig.update_layout(hovermode="x unified", title="Contrastive Loss")
+    fig.show()
     print('-------------------------------------------------------')
     result = model.evaluate(data_test_labeled, verbose=0)
     return result
