@@ -127,9 +127,10 @@ def ANN_test(ds_train, ds_test, input_shape, encoder, fine_tune_encoder, batch_s
     model.compile(optimizer='nadam', loss="sparse_categorical_crossentropy", metrics = "acc")
     callback = tf.keras.callbacks.EarlyStopping(patience=10, restore_best_weights=True)
     model.fit(data_train_labeled, batch_size=batch_size, epochs=epochs, validation_data=data_test_labeled, callbacks=[callback], verbose=0)
+    hist = pd.DataFrame(model.history.history)
     print(model.evaluate(data_test_labeled) )
 
-    hist = pd.DataFrame(model.history.history)
+    
     fig = px.line(hist, y = ['loss', 'acc', 'val_loss', 'val_acc'], x = hist.index+1)
     fig = fig.update_layout(hovermode="x unified")
     fig.show()
