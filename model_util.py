@@ -130,9 +130,8 @@ def ANN_test(ds_train, ds_test, input_shape, encoder, fine_tune_encoder, batch_s
     print(model.evaluate(data_test_labeled) )
 
     hist = pd.DataFrame(model.history.history)
-    hist.to_excel(savefile+'history.xlsx' ,index=False)
-    fig = px.line(hist, y = hist.columns, x = hist.index + 1, height=400, width=700)
-    fig = fig.update_layout(hovermode="x unified", title="Contrastive Loss")
+    fig = px.line(hist, y = ['loss', 'acc', 'val_loss', 'val_acc'], x = hist.index+1)
+    fig = fig.update_layout(hovermode="x unified")
     fig.show()
     print('-------------------------------------------------------')
     result = model.evaluate(data_test_labeled, verbose=0)
