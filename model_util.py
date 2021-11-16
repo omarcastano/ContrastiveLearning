@@ -94,7 +94,6 @@ def KNN_test(ds_train, ds_test, encoder):
 def ANN_test(ds_train, ds_test, input_shape, encoder, batch_size, epochs):
     data_train_labeled = (ds_train
                 .map(normalize_img, num_parallel_calls = tf.data.experimental.AUTOTUNE)
-                
                 .shuffle(100000)
                 .batch(batch_size)
                 .prefetch(tf.data.experimental.AUTOTUNE)
@@ -130,12 +129,13 @@ def ANN_test(ds_train, ds_test, input_shape, encoder, batch_size, epochs):
     hist = pd.DataFrame(model.history.history)
     print(model.evaluate(data_test_labeled) )
 
-    
+    print(hist)
     fig = px.line(hist, y = ['loss', 'acc', 'val_loss', 'val_acc'], x = hist.index+1)
     fig = fig.update_layout(hovermode="x unified")
     fig.show()
     print('-------------------------------------------------------')
     result_1 = model.evaluate(data_test_labeled, verbose=0)
+
 
 
     for layer in model.layers:
@@ -145,10 +145,12 @@ def ANN_test(ds_train, ds_test, input_shape, encoder, batch_size, epochs):
     print(f'ANN Results (fine tune encoder = True )')
 
 
-    model.compile(optimizer='nadam', loss="sparse_categorical_crossentropy", metrics = "acc")
+    nadam = tf.keras.optimizers.Nadam(learning_rate=0.0001)
+    model.compile(optimizer=nadam, loss="sparse_categorical_crossentropy", metrics = "acc")
     callback = tf.keras.callbacks.EarlyStopping(patience=10, restore_best_weights=True)
     model.fit(data_train_labeled, batch_size=batch_size, epochs=epochs, validation_data=data_test_labeled, callbacks=[callback], verbose=0)
     hist = pd.DataFrame(model.history.history)
+    print(hist)
     print(model.evaluate(data_test_labeled) )
 
     
@@ -175,7 +177,7 @@ def KMEANS_test(dataset, encoder):
     for i, l in dataset:
         labels.append(l.numpy())
 
-    kmeans = KMeans(n_clusters = 10, n_jobs = -1)
+    kmeans = KMeans(n_clusters = 10)
     y_pred = kmeans.fit_predict(embeddings)
     print('\n-----------------------------------------------------')
     print('Kmenas Clustering Results')
