@@ -91,7 +91,7 @@ def KNN_test(ds_train, ds_test, encoder):
     return knn.score(embeddings_test, np.array(labels_test) )
 
 #Neural Network at the top of the encoder
-def ANN_test(ds_train, ds_test, input_shape, encoder, fine_tune_encoder, batch_size, epochs):
+def ANN_test(ds_train, ds_test, input_shape, encoder, batch_size, epochs):
     data_train_labeled = (ds_train
                 .map(normalize_img, num_parallel_calls = tf.data.experimental.AUTOTUNE)
                 
@@ -109,10 +109,10 @@ def ANN_test(ds_train, ds_test, input_shape, encoder, fine_tune_encoder, batch_s
 
     encoder = encoder
     for layer in encoder.layers:
-        layer.trainable = fine_tune_encoder
+        layer.trainable = False
 
     print('\n-----------------------------------------------------')
-    print(f'ANN Results (fine tune encoder = {fine_tune_encoder} )')
+    print(f'ANN Results (fine tune encoder = False )')
 
     #tf.keras.backend.clear_session()
     model = tf.keras.models.Sequential([
@@ -135,8 +135,29 @@ def ANN_test(ds_train, ds_test, input_shape, encoder, fine_tune_encoder, batch_s
     fig = fig.update_layout(hovermode="x unified")
     fig.show()
     print('-------------------------------------------------------')
-    result = model.evaluate(data_test_labeled, verbose=0)
-    return result
+    result_1 = model.evaluate(data_test_labeled, verbose=0)
+
+
+    for layer in model.layers:
+        layer.trainable = True
+
+    print('\n-----------------------------------------------------')
+    print(f'ANN Results (fine tune encoder = True )')
+
+
+    model.compile(optimizer='nadam', loss="sparse_categorical_crossentropy", metrics = "acc")
+    callback = tf.keras.callbacks.EarlyStopping(patience=10, restore_best_weights=True)
+    model.fit(data_train_labeled, batch_size=batch_size, epochs=epochs, validation_data=data_test_labeled, callbacks=[callback], verbose=0)
+    hist = pd.DataFrame(model.history.history)
+    print(model.evaluate(data_test_labeled) )
+
+    
+    fig = px.line(hist, y = ['loss', 'acc', 'val_loss', 'val_acc'], x = hist.index+1)
+    fig = fig.update_layout(hovermode="x unified")
+    fig.show()
+    print('-------------------------------------------------------')
+    result_2 = model.evaluate(data_test_labeled, verbose=0)
+    return result_1, result_2
 
 
 
