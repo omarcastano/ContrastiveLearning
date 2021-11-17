@@ -119,14 +119,14 @@ def ANN_test(ds_train, ds_test, input_shape, encoder, batch_size, epochs):
             tf.keras.layers.RandomFlip(mode='horizontal'),
             tf.keras.layers.RandomContrast(factor=(0.1,0.5)),
             encoder,
-            tf.keras.layers.Dropout(0.3),
+            tf.keras.layers.Dropout(0.2),
             tf.keras.layers.Dense(128, activation='relu', kernel_initializer='he_normal'),
             tf.keras.layers.BatchNormalization(),
             tf.keras.layers.Dropout(0.2),
             tf.keras.layers.Dense(10, activation='softmax')
     ])
-
-    model.compile(optimizer='nadam', loss="sparse_categorical_crossentropy", metrics = "acc")
+    nadam = tf.keras.optimizers.Nadam(learning_rate=0.0001)
+    model.compile(optimizer=nadam, loss="sparse_categorical_crossentropy", metrics = "acc")
     callback = tf.keras.callbacks.EarlyStopping(patience=10, restore_best_weights=True)
     model.fit(data_train_labeled, batch_size=batch_size, epochs=epochs, validation_data=data_test_labeled, callbacks=[callback], verbose=0)
     hist = pd.DataFrame(model.history.history)
