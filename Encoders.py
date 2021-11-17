@@ -30,9 +30,6 @@ def get_vgg_encoder(input_shape, dropout=None):
         tf.keras.layers.BatchNormalization(),
         tf.keras.layers.Conv2D(512, kernel_size=3, padding='same', activation='relu', kernel_initializer='he_normal'),
         tf.keras.layers.BatchNormalization(),
-        tf.keras.layers.MaxPool2D(), 
-        tf.keras.layers.Dropout(dropout),
-
 
         tf.keras.layers.GlobalAveragePooling2D()
     ], name='Encoder')
