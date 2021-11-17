@@ -41,7 +41,7 @@ def tsne_plot(dataset, encoder, labeles_names, path):
     for i, l in dataset:
         labels.append(labeles_names[l.numpy()])
 
-    tsne = TSNE(n_components = 2, perplexity=30, n_jobs = -1)
+    tsne = TSNE(n_components = 2, perplexity=30, n_jobs = -1,learning_rate='auto', init = 'pca')
     #embeddings = MinMaxScaler().fit_transform(embeddings)
     img_tsne = tsne.fit_transform(embeddings)
     plt.figure(figsize=(11,7))
@@ -120,6 +120,9 @@ def ANN_test(ds_train, ds_test, input_shape, encoder, batch_size, epochs):
             tf.keras.layers.RandomContrast(factor=(0.1,0.5)),
             encoder,
             tf.keras.layers.Dropout(0.3),
+            tf.keras.layers.Dense(128, activation='relu', kernel_initializer='he_normal'),
+            tf.keras.layers.BatchNormalization(),
+            tf.keras.layers.Dropout(0.2),
             tf.keras.layers.Dense(10, activation='softmax')
     ])
 
@@ -145,7 +148,7 @@ def ANN_test(ds_train, ds_test, input_shape, encoder, batch_size, epochs):
     print(f'ANN Results (fine tune encoder = True )')
 
 
-    nadam = tf.keras.optimizers.Nadam(learning_rate=0.00001)
+    nadam = tf.keras.optimizers.Nadam(learning_rate=0.000005)
     model.compile(optimizer=nadam, loss="sparse_categorical_crossentropy", metrics = "acc")
     callback = tf.keras.callbacks.EarlyStopping(patience=10, restore_best_weights=True)
     model.fit(data_train_labeled, batch_size=batch_size, epochs=epochs, validation_data=data_test_labeled, callbacks=[callback], verbose=0)
