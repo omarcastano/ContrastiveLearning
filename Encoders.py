@@ -42,3 +42,4 @@ def get_resnet18_encoder(input_shape):
         ResNet18(input_shape)
     ], name='Encoder')
     return encoder
+
