@@ -22,3 +22,4 @@ def contrastive_loss(temperature=0.1):
 
         return loss_1 + loss_2
     return loss
+
