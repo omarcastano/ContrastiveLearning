@@ -66,7 +66,6 @@ def visualize_augmentations(dataset, n_images, strength=0.1, croped_size=26):
         ax[1,i].axis('off')
         ax[0,i].axis('off')
 
-
 #get positive pairs        
 def get_augmented_datasets(ds_unlabeled, batch_size, strength, croped_size):
     x1_train =  (ds_unlabeled.shuffle(600000, seed=26)
@@ -96,7 +95,6 @@ def get_augmented_datasets(ds_unlabeled, batch_size, strength, croped_size):
 
     return x, data_unlabeled
 
-
 def plot_augmented_data(data_unlabeled, x):
     (x1_view, _), (x2_view, _) = next(iter(data_unlabeled))
     x_view, _ = next(iter(x))
@@ -119,4 +117,3 @@ def plot_augmented_data(data_unlabeled, x):
         ax[2, i].set_title('Augmentated 2')
 
     plt.show()
-
