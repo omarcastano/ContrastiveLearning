@@ -46,8 +46,6 @@ class SimCLR(tf.keras.Model):
         self.loss_tracker.update_state(loss)
         return {m.name: m.result() for m in self.metrics}
 
-    
-
     def test_step(self, data):
         #augmented data
         (x1, _) , (x2, _) = data
