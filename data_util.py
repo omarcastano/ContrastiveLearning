@@ -18,8 +18,6 @@ def random_crop_and_flip(image, croped_size):
     image = tf.clip_by_value(image, 0, 1)
     return image
   
-
-  
 # Color distortion
 def random_color_distorio(image, strength = 1.0):
 
